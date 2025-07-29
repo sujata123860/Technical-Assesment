@@ -1,0 +1,6 @@
+agentName,firstName,lastName,dateOfBirth,address,city,state,zipCode,phoneNumber,email,gender,userType,accountName,categoryName,companyName,policyNumber,policyStartDate,policyEndDate
+John Agent,Alice,Smith,1985-03-15,123 Main St,New York,NY,10001,555-0101,alice.smith@email.com,Female,Premium,Alice Premium Account,Auto Insurance,ABC Insurance Co,POL-001-2024,2024-01-01,2024-12-31
+Jane Agent,Bob,Johnson,1990-07-22,456 Oak Ave,Los Angeles,CA,90210,555-0102,bob.johnson@email.com,Male,Standard,Bob Standard Account,Home Insurance,XYZ Insurance Corp,POL-002-2024,2024-02-01,2025-01-31
+Mike Agent,Carol,Williams,1988-11-08,789 Pine Rd,Chicago,IL,60601,555-0103,carol.williams@email.com,Female,Premium,Carol Premium Account,Life Insurance,DEF Insurance Ltd,POL-003-2024,2024-03-01,2025-02-28
+Sarah Agent,David,Brown,1992-05-30,321 Elm St,Houston,TX,77001,555-0104,david.brown@email.com,Male,Standard,David Standard Account,Health Insurance,GHI Insurance Inc,POL-004-2024,2024-04-01,2025-03-31
+Tom Agent,Emma,Davis,1987-09-12,654 Maple Dr,Phoenix,AZ,85001,555-0105,emma.davis@email.com,Female,Premium,Emma Premium Account,Auto Insurance,ABC Insurance Co,POL-005-2024,2024-05-01,2025-04-30

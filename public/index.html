@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Policy Management System - API Testing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .api-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .api-section h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #bdc3c7;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .result.success {
+            background: #d5f4e6;
+            border: 2px solid #27ae60;
+            color: #1e8449;
+        }
+        
+        .result.error {
+            background: #fadbd8;
+            border: 2px solid #e74c3c;
+            color: #c0392b;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-online {
+            background: #27ae60;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-offline {
+            background: #e74c3c;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .file-upload {
+            border: 2px dashed #bdc3c7;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: #3498db;
+        }
+        
+        .file-upload.dragover {
+            border-color: #27ae60;
+            background: #d5f4e6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏛️ Policy Management System</h1>
+            <p>API Testing Interface</p>
+            <div style="margin-top: 15px;">
+                <span class="status-indicator status-offline" id="statusIndicator"></span>
+                <span id="statusText">Checking server status...</span>
+            </div>
+        </div>
+        
+        <div class="content">
+            <!-- Health Check -->
+            <div class="api-section">
+                <h2>🏥 Health Check</h2>
+                <button class="btn" onclick="checkHealth()">Check Server Health</button>
+                <div id="healthResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <!-- File Upload -->
+            <div class="api-section">
+                <h2>📁 File Upload (XLSX/CSV)</h2>
+                <div class="file-upload" id="fileUpload">
+                    <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" style="display: none;">
+                    <p>📤 Click to select or drag & drop your CSV/XLSX file here</p>
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">Select File</button>
+                </div>
+                <button class="btn" onclick="uploadFile()" style="margin-top: 15px;">Upload File</button>
+                <div id="uploadResult" class="result" style="display: none;"></div>
+            </div>
+            
+            <div class="grid">
+                <!-- Policy Search -->
+                <div class="api-section">
+                    <h2>🔍 Policy Search</h2>
+                    <div class="form-group">
+                        <label for="searchUsername">Username (First Name):</label>
+                        <input type="text" id="searchUsername" placeholder="Enter first name" value="Alice">
+                    </div>
+                    <button class="btn" onclick="searchPolicies()">Search Policies</button>
+                    <div id="searchResult" class="result" style="display: none;"></div>
+                </div>
+                
+                <!-- Aggregated Policies -->
+                <div class="api-section">
+                    <h2>📊 Aggregated Policies</h2>
+                    <button class="btn" onclick="getAggregatedPolicies()">Get Aggregated Data</button>
+                    <div id="aggregatedResult" class="result" style="display: none;"></div>
+                </div>
+            </div>
+            
+            <!-- Schedule Message -->
+            <div class="api-section">
+                <h2>⏰ Schedule Message</h2>
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="messageText">Message:</label>
+                        <textarea id="messageText" rows="3" placeholder="Enter your message">Test message from web interface</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="messageDate">Date:</label>
+                        <input type="date" id="messageDate">
+                    </div>
+                    <div class="form-group">
+                        <label for="messageTime">Time:</label>
+                        <input type="time" id="messageTime">
+                    </div>
+                </div>
+                <button class="btn" onclick="scheduleMessage()">Schedule Message</button>
+                <div id="scheduleResult" class="result" style="display: none;"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = '/api';
+        
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            checkHealth();
+            setDefaultDateTime();
+            setupFileUpload();
+        });
+        
+        function setDefaultDateTime() {
+            const now = new Date();
+            const tomorrow = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+            
+            document.getElementById('messageDate').value = tomorrow.toISOString().split('T')[0];
+            document.getElementById('messageTime').value = '10:00';
+        }
+        
+        function setupFileUpload() {
+            const fileUpload = document.getElementById('fileUpload');
+            const fileInput = document.getElementById('fileInput');
+            
+            fileUpload.addEventListener('click', () => fileInput.click());
+            
+            fileUpload.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                fileUpload.classList.add('dragover');
+            });
+            
+            fileUpload.addEventListener('dragleave', () => {
+                fileUpload.classList.remove('dragover');
+            });
+            
+            fileUpload.addEventListener('drop', (e) => {
+                e.preventDefault();
+                fileUpload.classList.remove('dragover');
+                fileInput.files = e.dataTransfer.files;
+                updateFileUploadText();
+            });
+            
+            fileInput.addEventListener('change', updateFileUploadText);
+        }
+        
+        function updateFileUploadText() {
+            const fileInput = document.getElementById('fileInput');
+            const fileUpload = document.getElementById('fileUpload');
+            
+            if (fileInput.files.length > 0) {
+                fileUpload.innerHTML = `
+                    <p>📄 Selected: ${fileInput.files[0].name}</p>
+                    <button class="btn" onclick="document.getElementById('fileInput').click()">Change File</button>
+                `;
+            }
+        }
+        
+        async function makeRequest(url, options = {}) {
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                return { success: response.ok, data, status: response.status };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+        
+        function showResult(elementId, result, isSuccess) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = `result ${isSuccess ? 'success' : 'error'}`;
+            element.textContent = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
+        }
+        
+        async function checkHealth() {
+            const result = await makeRequest(`${API_BASE}/health`);
+            const statusIndicator = document.getElementById('statusIndicator');
+            const statusText = document.getElementById('statusText');
+            
+            if (result.success) {
+                statusIndicator.className = 'status-indicator status-online';
+                statusText.textContent = 'Server Online';
+                showResult('healthResult', result.data, true);
+            } else {
+                statusIndicator.className = 'status-indicator status-offline';
+                statusText.textContent = 'Server Offline';
+                showResult('healthResult', result.error || 'Server is not responding', false);
+            }
+        }
+        
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            
+            if (!fileInput.files.length) {
+                showResult('uploadResult', 'Please select a file first', false);
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            const result = await makeRequest(`${API_BASE}/upload`, {
+                method: 'POST',
+                body: formData
+            });
+            
+            showResult('uploadResult', result.success ? result.data : result.error, result.success);
+        }
+        
+        async function searchPolicies() {
+            const username = document.getElementById('searchUsername').value.trim();
+            
+            if (!username) {
+                showResult('searchResult', 'Please enter a username', false);
+                return;
+            }
+            
+            const result = await makeRequest(`${API_BASE}/policies/search/${encodeURIComponent(username)}`);
+            showResult('searchResult', result.success ? result.data : result.error, result.success);
+        }
+        
+        async function getAggregatedPolicies() {
+            const result = await makeRequest(`${API_BASE}/policies/aggregated`);
+            showResult('aggregatedResult', result.success ? result.data : result.error, result.success);
+        }
+        
+        async function scheduleMessage() {
+            const message = document.getElementById('messageText').value.trim();
+            const date = document.getElementById('messageDate').value;
+            const time = document.getElementById('messageTime').value;
+            
+            if (!message || !date || !time) {
+                showResult('scheduleResult', 'Please fill in all fields', false);
+                return;
+            }
+            
+            const result = await makeRequest(`${API_BASE}/schedule-message`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    message,
+                    day: date,
+                    time: time
+                })
+            });
+            
+            showResult('scheduleResult', result.success ? result.data : result.error, result.success);
+        }
+    </script>
+</body>
+</html>
